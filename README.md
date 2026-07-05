@@ -102,6 +102,21 @@ This repo includes `netlify.toml` with the build command, publish directory, and
 4. Add the same two environment variables under **Site settings → Environment variables** before the first deploy.
 5. Add your Netlify URL (e.g. `https://your-site.netlify.app`) to Supabase's **Authentication → URL Configuration → Redirect URLs** so password reset emails work in production too.
 
+## Deploying to GitHub Pages
+
+A GitHub Actions workflow (`.github/workflows/deploy-pages.yml`) builds and deploys automatically on every push to `main`. To enable it:
+
+1. In your GitHub repo, go to **Settings → Pages**.
+2. Under **Build and deployment → Source**, select **GitHub Actions** (not "Deploy from a branch" — that serves raw source files, not the built app, which is why a blank page shows up if you try it).
+3. Go to **Settings → Secrets and variables → Actions → New repository secret** and add:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+4. Push any commit to `main` (or go to the **Actions** tab and re-run the workflow manually). After it finishes, your live URL appears under **Settings → Pages** and in the workflow run summary.
+
+This setup also handles two GitHub Pages–specific quirks that otherwise cause a blank page or broken routes:
+- **Relative asset paths** (`base: './'` in `vite.config.ts`) — GitHub Pages project sites are served under `/repo-name/`, not the domain root.
+- **Client-side routing fallback** — a `404.html` (identical to `index.html`) is generated automatically after every build, so refreshing or deep-linking to `/dashboard` (or any route) still loads the app instead of GitHub's default 404 page.
+
 ## Roadmap
 
 - [x] Design tokens (colors, typography, dark/light mode)
