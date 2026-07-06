@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { IconSearch } from '../icons'
 import { Button } from '../ui/Button'
 import { NotificationsMenu } from './NotificationsMenu'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth'
 
 interface TopbarProps {
   dark: boolean

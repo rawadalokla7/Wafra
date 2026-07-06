@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import { isSupabaseConfigured } from '../lib/supabase'
 import * as api from '../lib/api'
 import { accounts as mockAccounts, transactions as mockTransactions, goalSeeds } from '../data/mockData'

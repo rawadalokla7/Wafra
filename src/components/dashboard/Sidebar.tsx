@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { IconHome, IconList, IconSend, IconChart, IconSettings, IconLogout } from '../icons'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth'
 
 interface SidebarProps {
   active: string

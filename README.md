@@ -113,8 +113,8 @@ A GitHub Actions workflow (`.github/workflows/deploy-pages.yml`) builds and depl
    - `VITE_SUPABASE_ANON_KEY`
 4. Push any commit to `main` (or go to the **Actions** tab and re-run the workflow manually). After it finishes, your live URL appears under **Settings → Pages** and in the workflow run summary.
 
-This setup also handles two GitHub Pages–specific quirks that otherwise cause a blank page or broken routes:
-- **Relative asset paths** (`base: './'` in `vite.config.ts`) — GitHub Pages project sites are served under `/repo-name/`, not the domain root.
+This setup also handles GitHub Pages–specific quirks that otherwise cause a blank page or broken routes:
+- **Absolute asset paths matching the deployed subpath** — the workflow builds with `VITE_BASE_PATH=/<repo-name>/`, and `vite.config.ts` uses it for `base`. This is why the app previously showed a blank page with just the background visible: assets loaded fine once the base path was set, but React Router still assumed it was running at the domain root. `App.tsx` now sets `<BrowserRouter basename={import.meta.env.BASE_URL}>`, which reads that same configured base automatically — so routing works whether the app is served from `/` (Netlify) or `/repo-name/` (GitHub Pages), with no per-host code changes needed.
 - **Client-side routing fallback** — a `404.html` (identical to `index.html`) is generated automatically after every build, so refreshing or deep-linking to `/dashboard` (or any route) still loads the app instead of GitHub's default 404 page.
 
 ## Roadmap
