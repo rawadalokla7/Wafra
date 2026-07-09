@@ -77,7 +77,26 @@ create trigger on_auth_user_created_wafra
 -- Transfer function: debit SAR balance + log the outgoing transaction atomically
 create or replace function public.make_transfer(p_amount numeric, p_recipient text, p_note text default null)
 returns void as $$
+declare
+  current_balance numeric;
 begin
+  if p_amount <= 0 then
+    raise exception 'Transfer amount must be greater than zero';
+  end if;
+
+  select balance into current_balance
+    from public.accounts
+    where user_id = auth.uid() and currency = 'SAR'
+    for update;
+
+  if current_balance is null then
+    raise exception 'No SAR account found for this user';
+  end if;
+
+  if current_balance < p_amount then
+    raise exception 'Insufficient balance: available %, requested %', current_balance, p_amount;
+  end if;
+
   update public.accounts
     set balance = balance - p_amount
     where user_id = auth.uid() and currency = 'SAR';

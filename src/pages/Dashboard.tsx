@@ -8,6 +8,7 @@ import { SpendingChart } from '../components/dashboard/SpendingChart'
 import { BudgetGoals } from '../components/dashboard/BudgetGoals'
 import { StatCard } from '../components/dashboard/StatCard'
 import { TransferModal } from '../components/dashboard/TransferModal'
+import { DashboardSkeleton } from '../components/dashboard/DashboardSkeleton'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { IconCoins, IconArrowDown, IconArrowUp } from '../components/icons'
@@ -52,7 +53,7 @@ export function Dashboard({ dark, onToggleDark }: Props) {
           )}
 
           {loading ? (
-            <div className="grid place-items-center py-24 text-sm text-[var(--text-secondary)]">…</div>
+            <DashboardSkeleton />
           ) : (
             <>
               {active === 'overview' && (
@@ -144,7 +145,12 @@ export function Dashboard({ dark, onToggleDark }: Props) {
         </main>
       </div>
 
-      <TransferModal open={transferOpen} onClose={() => setTransferOpen(false)} onConfirm={transfer} />
+      <TransferModal
+        open={transferOpen}
+        onClose={() => setTransferOpen(false)}
+        onConfirm={transfer}
+        availableBalance={primaryAccount?.balance}
+      />
     </div>
   )
 }

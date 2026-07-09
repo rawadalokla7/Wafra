@@ -1,6 +1,47 @@
-# Wafra — وفرة
+<p align="center">
+  <img src="public/og-image.png" alt="Wafra — digital banking for the Gulf market" width="640" />
+</p>
 
-A bilingual (Arabic/English) digital banking frontend, designed and built for the Gulf fintech market.
+<h1 align="center">Wafra — وفرة</h1>
+
+<p align="center">
+  A bilingual (Arabic/English) digital banking dashboard concept, built for the Gulf fintech market.<br/>
+  React · TypeScript · Tailwind · Supabase (Auth + Postgres + RLS)
+</p>
+
+<p align="center">
+  <a href="https://github.com/rawadalokla7/Wafra/actions/workflows/deploy-pages.yml"><img src="https://github.com/rawadalokla7/Wafra/actions/workflows/deploy-pages.yml/badge.svg" alt="Deploy status" /></a>
+  <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript strict" />
+  <img src="https://img.shields.io/badge/tests-passing-2EA44F" alt="Tests passing" />
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license" />
+</p>
+
+<p align="center">
+  <a href="https://wafra7.netlify.app"><b>🔴 Live demo (Netlify)</b></a> ·
+  <a href="https://rawadalokla7.github.io/Wafra/"><b>Live demo (GitHub Pages)</b></a>
+</p>
+
+---
+
+## What this is
+
+Wafra is a portfolio project simulating a Gulf digital bank: a marketing site plus a working account dashboard, backed by **real authentication and a real database** — not just static mock UI. It was built to demonstrate production-level frontend engineering for fintech roles targeting Gulf-region companies.
+
+## Features
+
+- **Bilingual by design** — Arabic (RTL, Cairo font) and English (LTR, Inter font), switched live with no page reload
+- **Real auth** — email/password, email OTP, and full password-recovery flow via Supabase Auth
+- **Real database** — multi-currency accounts, transactions, and savings goals in Postgres, scoped per user with Row Level Security
+- **Atomic money transfers** — a Postgres function validates balance and debits/logs the transaction in one atomic operation (no overdrafts possible)
+- **Dark mode** — follows system preference, toggle everywhere
+- **Fully responsive** — hamburger nav on the marketing site, bottom tab bar on the dashboard
+- **Accessible** — visible focus states, `prefers-reduced-motion` respected
+- **Tested** — Vitest + Testing Library unit tests for business logic and components
+- **CI/CD** — GitHub Actions lints, tests, and deploys automatically on every push
+
+## Screenshots
+
+> _Add a few screenshots or a short screen recording here (landing page, dashboard, transfer flow, Arabic view) — this is the first thing recruiters look at. A quick way: open the live demo, use your browser's screenshot tool, and drag the images into this section on GitHub._
 
 ## Brand identity
 
@@ -18,12 +59,22 @@ Typography: **Cairo** (Arabic) / **Inter** (English), switched automatically wit
 - React + TypeScript + Vite
 - Tailwind CSS (custom design tokens, dark mode via `class` strategy)
 - react-i18next (AR/EN with automatic RTL/LTR direction switching)
+- Supabase (Auth, Postgres, Row Level Security)
+- Vitest + React Testing Library
+- GSAP (landing page animations, `prefers-reduced-motion`-aware)
+- Recharts (spending analytics)
 
 ## Getting started
 
 ```bash
 npm install
 npm run dev
+```
+
+Run the test suite:
+
+```bash
+npm test
 ```
 
 ## Project structure
@@ -86,6 +137,8 @@ This creates:
 
 Once this is run, any account created through `/signup` will have real, persisted data — balances, transactions, and goals all live in your Supabase project, not in local mock data. If you're logged out (or `.env` isn't configured), the dashboard falls back to demo data automatically, with a small notice banner so it's always clear which mode you're viewing.
 
+> If you already ran an earlier version of this schema, re-running `schema.sql` is safe — `create or replace function` updates `make_transfer` in place (it now validates the balance before debiting, preventing overdrafts) without touching your existing data.
+
 ## Deploying to Netlify
 
 This repo includes `netlify.toml` with the build command, publish directory, and the SPA redirect rule React Router needs (without it, refreshing `/dashboard` or any non-root route gives a 404).
@@ -132,4 +185,10 @@ This setup also handles GitHub Pages–specific quirks that otherwise cause a bl
 - [x] Password recovery flow (forgot/reset password)
 - [x] Basic form validation (email format, password strength, confirmation match)
 - [x] Deployment-ready (netlify.toml with SPA redirects)
-- [ ] Live on a public URL
+- [x] Live on a public URL (Netlify + GitHub Pages)
+- [x] Balance validation on transfers (no overdrafts, atomic Postgres function)
+- [x] Skeleton loading states
+- [x] SEO / Open Graph / Twitter card meta tags
+- [x] Unit tests (Vitest + Testing Library) run in CI before every deploy
+- [ ] Screenshots/recording in this README
+- [ ] Settings page (currently a placeholder)

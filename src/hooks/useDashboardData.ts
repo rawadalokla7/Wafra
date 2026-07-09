@@ -68,6 +68,10 @@ export function useDashboardData() {
         await api.makeTransfer(amount, recipient, note)
         await loadLive()
       } else {
+        const sarAccount = accounts.find((a) => a.currency === 'SAR')
+        if (!sarAccount || sarAccount.balance < amount) {
+          throw new Error(t('transfer_insufficient_balance'))
+        }
         setTransactions((prev) => [
           { id: `local-${Date.now()}`, name: recipient, category: 'other', amount, date: new Date().toISOString().slice(0, 10), direction: 'out' },
           ...prev,
@@ -75,7 +79,7 @@ export function useDashboardData() {
         setAccounts((prev) => prev.map((a) => (a.currency === 'SAR' ? { ...a, balance: a.balance - amount } : a)))
       }
     },
-    [isLive, loadLive],
+    [isLive, loadLive, accounts, t],
   )
 
   return { isLive, loading, error, accounts, transactions, goals, addGoal, transfer, refresh }

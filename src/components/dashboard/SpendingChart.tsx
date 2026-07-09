@@ -1,35 +1,16 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
-import type { Transaction, TransactionCategory } from '../../types'
+import type { Transaction } from '../../types'
+import { computeSpendingBreakdown } from '../../lib/spending'
 
 interface Props {
   transactions: Transaction[]
 }
 
-const categoryMeta: Record<TransactionCategory, { key: string; color: string }> = {
-  food: { key: 'cat_food', color: '#0F5C4B' },
-  shopping: { key: 'cat_shopping', color: '#1D7A5C' },
-  transport: { key: 'cat_transport', color: '#C9A24B' },
-  bills: { key: 'cat_bills', color: '#8AA69D' },
-  other: { key: 'cat_other', color: '#5F7A72' },
-}
-
 export function SpendingChart({ transactions }: Props) {
   const { t } = useTranslation()
-
-  const breakdown = useMemo(() => {
-    const totals: Record<string, number> = {}
-    transactions
-      .filter((tx) => tx.direction === 'out')
-      .forEach((tx) => {
-        totals[tx.category] = (totals[tx.category] ?? 0) + tx.amount
-      })
-    return (Object.keys(categoryMeta) as TransactionCategory[])
-      .map((cat) => ({ category: cat, value: totals[cat] ?? 0, ...categoryMeta[cat] }))
-      .filter((c) => c.value > 0)
-  }, [transactions])
-
+  const breakdown = useMemo(() => computeSpendingBreakdown(transactions), [transactions])
   const total = breakdown.reduce((sum, c) => sum + c.value, 0)
 
   if (total === 0) {

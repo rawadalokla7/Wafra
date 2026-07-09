@@ -8,9 +8,10 @@ interface Props {
   open: boolean
   onClose: () => void
   onConfirm: (amount: number, recipient: string, note?: string) => Promise<void> | void
+  availableBalance?: number
 }
 
-export function TransferModal({ open, onClose, onConfirm }: Props) {
+export function TransferModal({ open, onClose, onConfirm, availableBalance }: Props) {
   const { t, i18n } = useTranslation()
   const isAr = i18n.language === 'ar'
   const [step, setStep] = useState(1)
@@ -61,11 +62,23 @@ export function TransferModal({ open, onClose, onConfirm }: Props) {
         {step === 1 && (
           <div>
             <h3 className="text-lg font-bold">{t('transfer_step1_title')}</h3>
+            {typeof availableBalance === 'number' && (
+              <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                {t('transfer_available_balance')}: <span className="font-medium" style={{ color: 'var(--accent-gold)' }}>{availableBalance.toLocaleString()} SAR</span>
+              </p>
+            )}
             <div className="mt-5">
               <Input label={t('transfer_amount_label')} type="number" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} />
+              {typeof availableBalance === 'number' && Number(amount) > availableBalance && (
+                <p className="mt-1.5 text-xs text-red-500">{t('transfer_insufficient_balance')}</p>
+              )}
             </div>
             <div className="mt-7 flex justify-end">
-              <Button variant="gold" disabled={!amount || Number(amount) <= 0} onClick={() => setStep(2)}>
+              <Button
+                variant="gold"
+                disabled={!amount || Number(amount) <= 0 || (typeof availableBalance === 'number' && Number(amount) > availableBalance)}
+                onClick={() => setStep(2)}
+              >
                 {t('transfer_continue')}
               </Button>
             </div>

@@ -113,6 +113,8 @@ export const resources = {
       transfer_from: 'من حساب',
       transfer_to: 'إلى',
       transfer_amount: 'المبلغ',
+      transfer_insufficient_balance: 'الرصيد غير كافٍ لإتمام هذا التحويل',
+      transfer_available_balance: 'الرصيد المتاح',
 
       page_about_title: 'عن وفرة',
       page_about_body: 'وفرة بنك رقمي مرخّص، بنيناه من أجل السوق الخليجي تحديدًا — بتجربة ثنائية اللغة، عملات متعددة، وأدوات تساعدك تدير مالك بذكاء ووضوح. رسالتنا بسيطة: مصرفك يجب أن يشبه حياتك الرقمية، لا أن يقيدها.',
@@ -281,6 +283,8 @@ export const resources = {
       transfer_from: 'From account',
       transfer_to: 'To',
       transfer_amount: 'Amount',
+      transfer_insufficient_balance: 'Insufficient balance to complete this transfer',
+      transfer_available_balance: 'Available balance',
 
       page_about_title: 'About Wafra',
       page_about_body: 'Wafra is a licensed digital bank built specifically for the Gulf market — bilingual by design, multi-currency, and focused on giving you clarity and control over your money. Our mission is simple: your bank should feel like the rest of your digital life, not fight against it.',

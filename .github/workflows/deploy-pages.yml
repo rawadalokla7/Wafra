@@ -38,6 +38,8 @@ jobs:
           fi
 
       - run: npm ci
+      - run: npm run lint
+      - run: npm test
       - run: npm run build
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
