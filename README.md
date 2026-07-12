@@ -139,6 +139,19 @@ Once this is run, any account created through `/signup` will have real, persiste
 
 > If you already ran an earlier version of this schema, re-running `schema.sql` is safe — `create or replace function` updates `make_transfer` in place (it now validates the balance before debiting, preventing overdrafts) without touching your existing data.
 
+## Security model
+
+This is a portfolio project, not a licensed financial institution — real money movement requires regulatory licensing (e.g. SAMA in Saudi Arabia, the UAE Central Bank) that no amount of code can substitute for. What *is* implemented here reflects the actual security principles real fintech backends use:
+
+- **The browser can only read its own data, never write it directly.** Row Level Security policies on `accounts`, `transactions`, and `goals` grant `SELECT` only. There is no policy allowing `INSERT`/`UPDATE`/`DELETE` from the client at all — not even for a user's own rows. This closes off a real class of bug: without this, a technically savvy user could open devtools and directly set their own balance via `supabase.from('accounts').update(...)`, since a naive "owner can do anything to their own rows" policy doesn't distinguish *legitimate app actions* from *arbitrary writes*.
+- **All mutations go through `SECURITY DEFINER` Postgres functions** (`make_transfer`, `add_savings_goal`) that validate the request server-side — balance sufficiency, positive amounts, required fields — before touching any data. The client can only ever *ask* for a transfer; the database decides whether it's valid.
+- **Idempotency keys on transfers.** A retried or double-submitted request (flaky network, double-click) is a safe no-op instead of a duplicate charge.
+- **Append-only transaction ledger.** There's no policy or function that updates or deletes a transaction once written — it's a permanent audit trail, the same principle real ledgers use.
+- **Data integrity constraints at the database level** (`CHECK` constraints: balances can't go negative, transaction amounts must be positive, goal targets must be positive) — enforced even if application code has a bug, not just in the UI.
+- **Two-factor authentication (TOTP)** — users can enroll an authenticator app under Settings, via Supabase's built-in MFA support.
+- **Security headers** (`netlify.toml`): `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, and a restrictive `Permissions-Policy`.
+- **Row-level isolation** — every table is scoped by `auth.uid()`, so one user can never read or affect another user's data even if a bug elsewhere leaked an ID.
+
 ## Deploying to Netlify
 
 This repo includes `netlify.toml` with the build command, publish directory, and the SPA redirect rule React Router needs (without it, refreshing `/dashboard` or any non-root route gives a 404).
@@ -190,5 +203,8 @@ This setup also handles GitHub Pages–specific quirks that otherwise cause a bl
 - [x] Skeleton loading states
 - [x] SEO / Open Graph / Twitter card meta tags
 - [x] Unit tests (Vitest + Testing Library) run in CI before every deploy
+- [x] Hardened security model: read-only client RLS, all writes via SECURITY DEFINER functions, idempotency keys, append-only ledger, DB-level CHECK constraints
+- [x] Two-factor authentication (TOTP) via Supabase MFA
+- [x] Security headers (CSP, X-Frame-Options, Permissions-Policy)
 - [ ] Screenshots/recording in this README
-- [ ] Settings page (currently a placeholder)
+- [ ] Rate limiting tuned in Supabase Auth settings (dashboard config, not code)

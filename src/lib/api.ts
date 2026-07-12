@@ -41,20 +41,21 @@ export async function fetchGoals(): Promise<Goal[]> {
 }
 
 export async function addGoal(name: string, target: number, currency = 'SAR'): Promise<void> {
-  const { data: userData, error: userErr } = await supabase.auth.getUser()
-  if (userErr) throw userErr
-  const user = userData.user
-  if (!user) throw new Error('Not authenticated')
-
-  const { error } = await supabase.from('goals').insert({ user_id: user.id, name, target, saved: 0, currency })
+  const { error } = await supabase.rpc('add_savings_goal', {
+    p_name: name,
+    p_target: target,
+    p_currency: currency,
+  })
   if (error) throw error
 }
 
 export async function makeTransfer(amount: number, recipient: string, note?: string): Promise<void> {
+  const idempotencyKey = crypto.randomUUID()
   const { error } = await supabase.rpc('make_transfer', {
     p_amount: amount,
     p_recipient: recipient,
     p_note: note ?? null,
+    p_idempotency_key: idempotencyKey,
   })
   if (error) throw error
 }

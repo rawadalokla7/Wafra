@@ -9,6 +9,7 @@ import { BudgetGoals } from '../components/dashboard/BudgetGoals'
 import { StatCard } from '../components/dashboard/StatCard'
 import { TransferModal } from '../components/dashboard/TransferModal'
 import { DashboardSkeleton } from '../components/dashboard/DashboardSkeleton'
+import { MfaSettings } from '../components/dashboard/MfaSettings'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { IconCoins, IconArrowDown, IconArrowUp } from '../components/icons'
@@ -135,9 +136,9 @@ export function Dashboard({ dark, onToggleDark }: Props) {
               {active === 'settings' && (
                 <div className="mx-auto max-w-xl">
                   <h1 className="text-2xl font-bold">{t('dash_settings')}</h1>
-                  <Card className="mt-6 text-sm text-[var(--text-secondary)]">
-                    {isAr ? 'إعدادات الحساب واللغة والأمان قريبًا.' : 'Account, language, and security settings coming soon.'}
-                  </Card>
+                  <div className="mt-6">
+                    <MfaSettings />
+                  </div>
                 </div>
               )}
             </>
