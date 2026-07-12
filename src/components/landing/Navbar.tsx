@@ -100,10 +100,24 @@ export function Navbar({ dark, onToggleDark }: NavbarProps) {
               </a>
             ))}
           </nav>
-          <div className="mt-4">
-            <Button variant="gold" className="w-full" onClick={() => navigate('/signup')}>
-              {t('nav_cta')}
-            </Button>
+          <div className="mt-4 flex flex-col gap-2">
+            {user ? (
+              <>
+                <p className="truncate text-center text-xs text-[var(--text-secondary)]">
+                  {t('nav_logged_in_as')} {user.email}
+                </p>
+                <Button variant="gold" className="w-full" onClick={() => navigate('/dashboard')}>
+                  {t('nav_go_dashboard')}
+                </Button>
+                <Button variant="ghost" className="w-full" onClick={() => signOut().then(() => navigate('/'))}>
+                  {t('dash_logout')}
+                </Button>
+              </>
+            ) : (
+              <Button variant="gold" className="w-full" onClick={() => navigate('/signup')}>
+                {t('nav_cta')}
+              </Button>
+            )}
           </div>
         </div>
       )}

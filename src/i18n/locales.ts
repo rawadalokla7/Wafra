@@ -130,6 +130,7 @@ export const resources = {
       mfa_success: 'تم تفعيل المصادقة الثنائية بنجاح',
       mfa_disabled_success: 'تم إلغاء تفعيل المصادقة الثنائية',
       mfa_setup_notice: 'باكند Supabase غير مربوط — هذه الميزة تحتاج اتصال حقيقي بقاعدة البيانات.',
+      nav_go_dashboard: 'الذهاب للوحة التحكم',
 
       page_about_title: 'عن وفرة',
       page_about_body: 'وفرة بنك رقمي مرخّص، بنيناه من أجل السوق الخليجي تحديدًا — بتجربة ثنائية اللغة، عملات متعددة، وأدوات تساعدك تدير مالك بذكاء ووضوح. رسالتنا بسيطة: مصرفك يجب أن يشبه حياتك الرقمية، لا أن يقيدها.',
@@ -315,6 +316,7 @@ export const resources = {
       mfa_success: 'Two-factor authentication enabled successfully',
       mfa_disabled_success: 'Two-factor authentication disabled',
       mfa_setup_notice: 'Supabase backend not connected — this feature needs a real database connection.',
+      nav_go_dashboard: 'Go to dashboard',
 
       page_about_title: 'About Wafra',
       page_about_body: 'Wafra is a licensed digital bank built specifically for the Gulf market — bilingual by design, multi-currency, and focused on giving you clarity and control over your money. Our mission is simple: your bank should feel like the rest of your digital life, not fight against it.',

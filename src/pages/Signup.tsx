@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AuthShell } from '../components/auth/AuthShell'
 import { Input } from '../components/ui/Input'
 import { Button } from '../components/ui/Button'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import { isValidEmail, isValidPassword } from '../lib/validation'
+import { useAuth } from '../context/useAuth'
 
 interface Props {
   dark: boolean
@@ -14,12 +15,18 @@ interface Props {
 
 export function Signup({ dark, onToggleDark }: Props) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { user, loading: authLoading } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    if (!authLoading && user && !success) navigate('/dashboard', { replace: true })
+  }, [authLoading, user, success, navigate])
 
   const handleSignup = async () => {
     setError('')
@@ -45,6 +52,8 @@ export function Signup({ dark, onToggleDark }: Props) {
     if (err) setError(err.message || t('auth_error_generic'))
     else setSuccess(true)
   }
+
+  if (authLoading || (user && !success)) return null
 
   return (
     <AuthShell dark={dark} onToggleDark={onToggleDark} title={t('auth_signup_title')} subtitle={t('auth_signup_sub')}>

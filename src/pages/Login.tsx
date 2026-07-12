@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthShell } from '../components/auth/AuthShell'
@@ -6,6 +6,7 @@ import { Input } from '../components/ui/Input'
 import { Button } from '../components/ui/Button'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import { isValidEmail } from '../lib/validation'
+import { useAuth } from '../context/useAuth'
 
 interface Props {
   dark: boolean
@@ -15,7 +16,12 @@ interface Props {
 export function Login({ dark, onToggleDark }: Props) {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { user, loading: authLoading } = useAuth()
   const [tab, setTab] = useState<'password' | 'otp'>('password')
+
+  useEffect(() => {
+    if (!authLoading && user) navigate('/dashboard', { replace: true })
+  }, [authLoading, user, navigate])
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -67,6 +73,8 @@ export function Login({ dark, onToggleDark }: Props) {
     if (err) setError(err.message || t('auth_error_generic'))
     else navigate('/dashboard')
   }
+
+  if (authLoading || user) return null
 
   return (
     <AuthShell dark={dark} onToggleDark={onToggleDark} title={t('auth_login_title')} subtitle={t('auth_login_sub')}>

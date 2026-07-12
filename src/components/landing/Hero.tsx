@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import { Button } from '../ui/Button'
 import { prefersReducedMotion } from '../../lib/motion'
+import { useAuth } from '../../context/useAuth'
 
 export function Hero() {
   const { t, i18n } = useTranslation()
@@ -11,6 +12,7 @@ export function Hero() {
   const rootRef = useRef<HTMLDivElement>(null)
   const pathRef = useRef<SVGPathElement>(null)
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   useLayoutEffect(() => {
     if (prefersReducedMotion()) return
@@ -54,7 +56,9 @@ export function Hero() {
           </p>
 
           <div className="hero-actions mt-8 flex flex-wrap gap-4">
-            <Button variant="gold" onClick={() => navigate('/signup')}>{t('hero_cta_primary')}</Button>
+            <Button variant="gold" onClick={() => navigate(user ? '/dashboard' : '/signup')}>
+              {user ? t('nav_go_dashboard') : t('hero_cta_primary')}
+            </Button>
             <Button variant="ghost" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>
               {t('hero_cta_secondary')}
             </Button>

@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Button } from '../ui/Button'
 import { IconCheck } from '../icons'
 import { prefersReducedMotion } from '../../lib/motion'
+import { useAuth } from '../../context/useAuth'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -14,6 +15,7 @@ export function Pricing() {
   const isAr = i18n.language === 'ar'
   const rootRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const plans = [
     { name: t('plan_basic_name'), price: t('plan_basic_price'), desc: t('plan_basic_desc'), popular: false },
@@ -80,8 +82,8 @@ export function Pricing() {
             </ul>
 
             <div className="mt-7">
-              <Button variant={plan.popular ? 'gold' : 'ghost'} className="w-full" onClick={() => navigate('/signup')}>
-                {t('plan_cta')}
+              <Button variant={plan.popular ? 'gold' : 'ghost'} className="w-full" onClick={() => navigate(user ? '/dashboard' : '/signup')}>
+                {user ? t('nav_go_dashboard') : t('plan_cta')}
               </Button>
             </div>
           </div>
